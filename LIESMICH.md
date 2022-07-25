@@ -1,19 +1,21 @@
-# SQ Deduplicator 22.1 - DEUTSCH
-Siehe Datei "README.md" für die englische Version
+<a href id="top"></a>
+# Google Ads Script Search Query Deduplicator 22.1 - DEUTSCH
+English version: <a href="https://github.com/RicSti/google-ads-scripts-search-query-deduplicator/blob/main/README.md">README.md</a>
 
 ## Beschreibung
 Identifiziere mit diesem Google Ads Script alle Suchbegriffe, die nicht in der angedachten Anzeigengruppe matchen und schließe diese automatisch aus.
 
 ## Übersicht
-* [Installation](#installation)
-* [Erste Ausführung & Übersicht der Spalten im Sheet](#ausführung)
-* [Planung / regelmäßige Ausführung](#planung)
-* [Funktionsbeschreibungen](#funktionen)
-* [Funktionsparameter](#parameter)
+* <a href="#installation">Installation</a>
+* <a href="#ausführung">Erste Ausführung & Übersicht der Spalten im Sheet</a>
+* <a href="#planung">Planung / regelmäßige Ausführung</a>
+* <a href="#funktionen">Funktionsbeschreibungen</a>
+* <a href="#parameter">Funktionsparameter</a>
 
 ---
+<a id="installation"></a>
 
-## Installation {#installation}
+## Installation
 
 ### I. Google Ads Scripts einrichten
 
@@ -34,7 +36,7 @@ Erstelle ein neues Google Ads Script <i>(Namensvorschlag: "SQ Deduplicator 22.1 
 #### <strong>Script 2 - "SQ Deduplicator 22.1 Process Data"</strong>
 Das zweite Script verarbeitet die noch nicht verarbeiteten Zeilen aus dem Google Sheet und schreibt den Verarbeitungsstatus in die jeweilige Datenzeile zurück.
 
-<u><i> Einrichtung:</i></u>
+<u><i>Einrichtung:</i></u>
 
 Erstelle ein neues Google Ads Script <i>(Namensvorschlag: "SQ Deduplicator 22.1 Process Data")</i> und überschreibe den Inhalt mit der passenden Code-Vorlage:
 
@@ -47,7 +49,9 @@ Für die Zwischenspeicherung und Weiterverarbeitung der Suchbegriffe wird ein Go
 
 Füge die ID Deines neu erstellten Google Sheets in beiden Scripts an der Stelle "{{Search Query Deduplicator Google Sheet ID}}" ein.
 
-### III BatchService Response (MCC) bzw. "ocid"-Parameter (Single Account) hinterlegen ==optional== {#installIII}
+<a id="installIII"></a>
+
+### _[optional]_ III BatchService Response (MCC) bzw. "ocid"-Parameter (Single Account) hinterlegen
 
 Um Direktlinks zu den Google Ads Anzeigengruppen zu generieren, wird die "ocid" zum jeweiligen Google Ads Konto benötigt.
 
@@ -56,7 +60,7 @@ Um Direktlinks zu den Google Ads Anzeigengruppen zu generieren, wird die "ocid" 
 Diese "ocid" kann aus der Response des BatchService auf MCC-Ebene für alle untergeordneten Konten ausgelesen werden. Um die Response als Object im Script zur Verfügung zu stellen, gehe wie folgt vor:
 
 1. Öffne das betreffende MCC und navigiere zu "Konten > Leistung"
-2. Öffen die Entwicklertools des Browsers und wähle den Reiter "Network" aus
+2. Öffne die Entwicklertools des Browsers und wähle den Reiter "Network" aus
 3. Lade die Seite neu und filtere die Einträge mit "batch account"
 4. Klicke den Eintrag an, der mit "Batch?authuser=" beginnt und wähle rechts die "Response" aus
 5. Kopiere den kompletten Inhalt der Response und füge ihn im <u>Script 1 - "SQ Deduplicator 22.1 Prepare Data"</u> an der Stelle "{{BatchService Response}}" ein.
@@ -78,7 +82,7 @@ Für Einzelkonten kann die "ocid" aus der Adressleiste abgelesen werden.
 <code>const ocid = '';</code>
 <hr>
 
-### IV. Account IDs definieren (==optional== für MCC-Version)
+### _[optional]_ IV. Account IDs definieren (für MCC-Version)
 
 Füge die Account IDs der zu verarbeitenden Konten als kommagetrennte Strings in beiden Scripts an der Stelle "{{Accound IDs Array}}" ein.
 
@@ -89,9 +93,12 @@ Füge die Account IDs der zu verarbeitenden Konten als kommagetrennte Strings in
 <p>Entferne die Stelle "{{Accound IDs Array}}", sodass folgender Inhalt in der Zeile stehen bleibt:</p>
 <code>let accountIds = [];</code>
 
-<hr>
+---
 
-## Erste Ausführung / Übersicht der Spalten im Sheet {#ausführung}
+<a id="ausführung"></a>
+
+## Erste Ausführung / Übersicht der Spalten im Sheet
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 Bei der ersten Ausführung des <u>Script 1 - "SQ Deduplicator 22.1 Prepare Data"</u> wird im Google Sheet für jedes verarbeitete Konto ein neues Tabellenblatt mit der jeweiligen Account ID als Tabellenblattname mit elf Spalten angelegt:
 
@@ -107,13 +114,16 @@ Bei der ersten Ausführung des <u>Script 1 - "SQ Deduplicator 22.1 Prepare Data"
 * conversions
 * processed
 
-Die erten sechs Spalten sind selbsterklärend.
+Die ersten sechs Spalten sind selbsterklärend.
 
-Die Spalte "deepLink" enthält einen direkten Link zur Anzeigengruppe des jeweiligen Suchbegriffs (sofern die "ocid" verfügbar ist - siehe  [Installation Schritt III](#installIII)). Die Spalten "impressions", "clicks" und "conversions" enthalten die jeweiligen Werte für den abgefragten Zeitraum (standardmäßig die letzten 30 Tage).
+Die Spalte "deepLink" enthält einen direkten Link zur Anzeigengruppe des jeweiligen Suchbegriffs (sofern die "ocid" verfügbar ist - siehe <a href="#installIII">Installation Schritt III</a>). Die Spalten "impressions", "clicks" und "conversions" enthalten die jeweiligen Werte für den abgefragten Zeitraum (standardmäßig die letzten 30 Tage).
 
 Die letzte Spalte "processed" kann nach der Ausführung des <u>Script 2 - "SQ Deduplicator 22.1 Process Data"</u> sechs verschiedene Rückgabewerte enthalten:
 
-### Rückgabewerte aus Script 2 {#rückgabewerte}
+<a id="rückgabewerte"></a>
+
+### Rückgabewerte aus Script 2
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 | Wert | Bedeutung |
 | --- | --- |
@@ -128,7 +138,10 @@ Die letzte Spalte "processed" kann nach der Ausführung des <u>Script 2 - "SQ De
 
 <hr>
 
-## Planung / regelmäßige Ausführung {#planung}
+<a id="planung"></a>
+
+## Planung / regelmäßige Ausführung
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 Durch die Ausführung des <u>Script 1 - "SQ Deduplicator 22.1 Prepare Data"</u> werden alle Daten im Google Sheet überschrieben. Für die meisten Konten sollte es ausreichen, das Script wöchentlich auszuführen. Bei großen Konten mit täglich mehreren Hundert neu identifizierten Suchanfragen macht eine tägliche Ausführung durchaus Sinn.
 
@@ -136,7 +149,10 @@ Das <u>Script 2 - "SQ Deduplicator 22.1 Process Data"</u> verarbeitet nur Zeilen
 
 <hr>
 
-## Funktionsbeschreibungen {#funktionen}
+<a id="funktionen"></a>
+
+## Funktionsbeschreibungen
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 ### Script 1 - "SQ Deduplicator 22.1 Prepare Data"
 
@@ -158,7 +174,7 @@ Das <u>Script 2 - "SQ Deduplicator 22.1 Process Data"</u> verarbeitet nur Zeilen
 </dl>
 <dl>
 <dt><a href="#getActiveSearchTerms">getActiveSearchTerms()</a> ⇒</dt>
-<dd><p>Ruft alle Suchbegriffe mit MatchType EXACT oder NEAR_EXACT ab, die im gegebenen Zeitraum (standardmäßig 30 Tage) eine Mindestanzahl an Impressionen (standardmäßig 30) generiert haben.</p>
+<dd><p>Ruft alle Suchbegriffe ab, die im gegebenen Zeitraum (standardmäßig 30 Tage) <u><strong>nicht</strong></u> mit Match Type EXACT oder NEAR EXACT gematcht haben und eine Mindestanzahl an Impressionen (standardmäßig 30) generiert haben.</p>
 </dd>
 </dl>
 <dl>
@@ -170,6 +186,7 @@ Das <u>Script 2 - "SQ Deduplicator 22.1 Process Data"</u> verarbeitet nur Zeilen
 ---
 
 ### Script 2 - "SQ Deduplicator 22.1 Process Data"
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 <dl>
 <dt><a href="#main2">main()</a> ⇒</dt>
@@ -210,7 +227,10 @@ Das <u>Script 2 - "SQ Deduplicator 22.1 Process Data"</u> verarbeitet nur Zeilen
 
 <hr>
 
-## Funktionsparameter {#parameter}
+<a id="parameter"></a>
+
+## Funktionsparameter
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 ### Script 1 - "SQ Deduplicator 22.1 Prepare Data"
 
@@ -218,7 +238,7 @@ Das <u>Script 2 - "SQ Deduplicator 22.1 Process Data"</u> verarbeitet nur Zeilen
 
 | Parameter | Typ | Beschreibung |
 | --- | --- | --- |
-| sheetFileId | String | Die ID des zu verwendenden Google Sheets.
+| sheetFileId | String | Die ID des zu verwendenden Google Sheets. |
 | batchAccountSnippet<br>(nur&nbsp;in&nbsp;MCC-Version) | Object | Der Inhalt der "Batch Service Response". (Wird zur automatischen Ermittlung der ocid benötigt.) |
 
 <a id="main1"></a>
@@ -276,6 +296,7 @@ Wird in Single-Account-Version als main() ausgeführt</a>
 ---
 
 ### Script 2 - "SQ Deduplicator 22.1 Process Data"
+<a href="#top"><button style="float:right;margin-top:-2.2em;">nach oben</button></a>
 
 ### global ⇒
 
@@ -332,7 +353,7 @@ Wird in Single-Account-Version als main() ausgeführt</a>
 | Parameter | Typ | Beschreibung |
 | --- | --- | --- |
 | term | String | Keyword-Text zur Erstellung des auszuschließenden Keywords. |
-| adgroup | Integer | ID der Kampagne, in der das auszuschließende Keyword erstellt werden soll. |
+| adgroup | Integer | ID der Anzeigengruppe, in der das auszuschließende Keyword erstellt werden soll. |
 
 <a id="readSheet"></a>
 ### readSheet() ⇒
